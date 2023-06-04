@@ -19,6 +19,7 @@ type myServer struct {
 	hellopb.UnimplementedGreetingServiceServer
 }
 
+// myServer structに対してHello関数を定義している
 func (s *myServer) Hello(ctx context.Context, req *hellopb.HelloRequest) (*hellopb.HelloResponse, error) {
 	// リクエストからnameフィールドを取り出して
 	// "Hello, [名前]!"というレスポンスを返す
@@ -35,6 +36,8 @@ func NewMyServer() *myServer {
 func main() {
 	// 1. 8082番portのLisnterを作成
 	port := 8082
+
+	// listenerにはどんなものが入っているのだろうか?
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
 	if err != nil {
 		panic(err)
@@ -47,6 +50,7 @@ func main() {
 	hellopb.RegisterGreetingServiceServer(s, NewMyServer())
 
 	// 4. サーバーリフレクションの設定
+	// gRPCurlコマンドでシリアライズできるようにするためRPCサーバーそのものから、protoファイルの情報を取得する
 	reflection.Register(s)
 
 	// 5. 作成したgRPCサーバーを、8082番ポートで稼働させる
